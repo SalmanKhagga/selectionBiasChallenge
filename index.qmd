@@ -1,6 +1,7 @@
 ---
 title: "Selection Bias & Missing Data Challenge"
 subtitle: "Creating a Statistics Meme"
+author: "Salman Ahmad Shah Khagga"
 format:
   html: default
 execute:
@@ -11,6 +12,8 @@ execute:
 ---
 
 ```{python}
+import contextlib
+import io
 import numpy as np
 import matplotlib.pyplot as plt
 from IPython.display import Image, display
@@ -23,44 +26,45 @@ from create_meme import create_statistics_meme
 
 img_path = "myphoto.jpg"
 
-gray_image = prepare_image(img_path, max_size=512)
+with contextlib.redirect_stdout(io.StringIO()):
+    gray_image = prepare_image(img_path, max_size=512)
 
-stipple_pattern, samples = create_stipple(
-    gray_image,
-    percentage=0.08,
-    sigma=0.9,
-    content_bias=0.9,
-    noise_scale_factor=0.1,
-    extreme_downweight=0.5,
-    extreme_threshold_low=0.2,
-    extreme_threshold_high=0.8,
-    extreme_sigma=0.1
-)
+    stipple_pattern, samples = create_stipple(
+        gray_image,
+        percentage=0.08,
+        sigma=0.9,
+        content_bias=0.9,
+        noise_scale_factor=0.1,
+        extreme_downweight=0.5,
+        extreme_threshold_low=0.2,
+        extreme_threshold_high=0.8,
+        extreme_sigma=0.1
+    )
 
-h, w = gray_image.shape
+    h, w = gray_image.shape
 
-block_letter = create_block_letter_s(
-    h,
-    w,
-    letter="S",
-    font_size_ratio=0.9
-)
+    block_letter = create_block_letter_s(
+        h,
+        w,
+        letter="S",
+        font_size_ratio=0.9
+    )
 
-masked_stipple = create_masked_stipple(
-    stipple_pattern,
-    block_letter,
-    threshold=0.5
-)
+    masked_stipple = create_masked_stipple(
+        stipple_pattern,
+        block_letter,
+        threshold=0.5
+    )
 
-create_statistics_meme(
-    original_img=gray_image,
-    stipple_img=stipple_pattern,
-    block_letter_img=block_letter,
-    masked_stipple_img=masked_stipple,
-    output_path="my_statistics_meme.png",
-    dpi=150,
-    background_color="white"
-)
+    create_statistics_meme(
+        original_img=gray_image,
+        stipple_img=stipple_pattern,
+        block_letter_img=block_letter,
+        masked_stipple_img=masked_stipple,
+        output_path="my_statistics_meme.png",
+        dpi=150,
+        background_color="white"
+    )
 
 display(Image("my_statistics_meme.png"))
 ```
